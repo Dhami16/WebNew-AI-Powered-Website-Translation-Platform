@@ -6,13 +6,13 @@ export default function Home() {
       <Head>
         <title>WebNew - Website Translation</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="stylesheet" href="styles/style.css" />
+        <link rel="stylesheet" href="/styles/style.css" />
       </Head>
       <div dangerouslySetInnerHTML={{ __html: `
         <!-- Header -->
         <header>
             <div class="logo-container">
-                <img src="public/logo.png" alt="WebNew Logo" class="logo-img">
+                <img src="/logo.png" alt="WebNew Logo" class="logo-img">
                 <h1>WebNew</h1>
             </div>
             <nav class="desktop-nav">
@@ -46,7 +46,7 @@ export default function Home() {
         <section class="hero">
             <div class="hero-content">
                 <div class="rose-logo-container">
-                    <img src="public/20250713_0023_White_Rose_Logo_simple_compose_01jzzzr2sfe6yshwjhqz5w944a-removebg-preview.png" alt="WebNew Rose Logo" class="rose-logo-img">
+                    <img src="/20250713_0023_White_Rose_Logo_simple_compose_01jzzzr2sfe6yshwjhqz5w944a-removebg-preview.png" alt="WebNew Rose Logo" class="rose-logo-img">
                 </div>
                 <h2>Instantly Translate Your Website in Minutes</h2>
                 <p>The fast and efficient website translation tool that enables users to translate their websites into multiple languages within minutes.</p>
@@ -131,13 +131,14 @@ export default function Home() {
 <pre><code>&lt;script
   src="/cdn/webnew.js"
   data-base-url="https://your-deployment-domain.com"
+  data-api-key="YOUR_API_KEY"
   data-default-lang=""
   async
 &gt;&lt;/script&gt;</code></pre>
                     </div>
                     <div class="embed-actions">
                         <button class="embed-copy-btn" onclick="copyEmbedSnippet('embed-snippet-1')">📋 Copy snippet</button>
-                        <span class="embed-note">Set <code>data-base-url</code> to your app origin hosting <code>/api/translate</code> (e.g., <code>https://app.example.com</code>).</span>
+                        <span class="embed-note">Set <code>data-base-url</code> to your app origin hosting <code>/api/translate</code> (e.g., <code>https://app.example.com</code>), and <code>data-api-key</code> to the key issued for your site.</span>
                     </div>
                     <div class="embed-meta">
                         <div><strong>data-default-lang</strong> (optional): <code>french</code>, <code>spanish</code>, <code>german</code>, <code>italian</code>, <code>portuguese</code>, <code>dutch</code>, <code>russian</code>, <code>chinese</code>, <code>japanese</code>, <code>korean</code>. Leave empty to auto-detect.</div>
@@ -454,7 +455,7 @@ export default function Home() {
           <!-- Column 1 - Logo and Description -->
           <div class="footer-col">
             <div class="footer-logo">
-              <img src="public/logo.png" alt="WebNew Logo" class="logo-img">
+              <img src="/logo.png" alt="WebNew Logo" class="logo-img">
               <h3>WebNew</h3>
             </div>
             <p class="footer-description">
