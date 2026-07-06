@@ -159,13 +159,23 @@
     return null
   }
 
-  async function translateMany(uniqueStrings, targetLanguage) {
-    // Sequential with micro-batching could be added; keep simple and robust
+  async function translateMany(uniqueStrings, targetLanguage, concurrency = 6) {
+    // Bounded-concurrency worker pool: fires several requests in flight at
+    // once instead of one at a time, without exceeding the backend's per-site
+    // rate limit (60 req/10s) for typical page sizes.
     const results = {}
-    for (const s of uniqueStrings) {
-      const t = await translateText(s, targetLanguage)
-      if (t) results[s] = t
+    let nextIndex = 0
+
+    async function worker() {
+      while (nextIndex < uniqueStrings.length) {
+        const s = uniqueStrings[nextIndex++]
+        const t = await translateText(s, targetLanguage)
+        if (t) results[s] = t
+      }
     }
+
+    const workers = Array.from({ length: Math.min(concurrency, uniqueStrings.length) }, worker)
+    await Promise.all(workers)
     return results
   }
 
