@@ -19,14 +19,8 @@ for that site — there is no shared, unauthenticated translation endpoint.
   explicit `success:false` + machine-readable error code. It never fabricates a
   fake translation.
 - **Per-site rate limiting** via Upstash Redis (sliding window).
-- **Translation history** per site, with pagination and CSV export from the
-  in-browser demo dashboard (see note below).
-
-> **Note on the "Try Translation Dashboard" section on the marketing page**: it's
-> a standalone sandbox that calls LibreTranslate/Google Translate directly from
-> the browser with its own fallback logic. It is **not** connected to the
-> productized widget/API path described in this README and exists purely as an
-> interactive demo.
+- **Translation history** per site, with pagination via the `/api/history`
+  endpoint.
 
 ## 🧭 V2.0 — Accounts & Dashboard (Milestone 1 of 5)
 
@@ -35,9 +29,10 @@ top of the V1.0 widget/API described above, without changing how the widget or
 `/api/*` routes work. Milestone 1 (**users, auth, sessions**) is implemented:
 
 - **Supabase Auth** for identity — email/password with email verification,
-  Google/GitHub/Microsoft OAuth, forgot/reset password, logout-everywhere.
-  No custom password hashing/JWT code; this reuses the Supabase project V1.0
-  already depends on.
+  forgot/reset password, logout-everywhere. OAuth via `signInWithOAuth`; Google
+  and GitHub are enabled today, Microsoft (`azure`) uses the same code path but
+  isn't enabled yet. No custom password hashing/JWT code; this reuses the
+  Supabase project V1.0 already depends on.
 - A new `app/` (App Router) tree — `login`, `signup`, `forgot-password`,
   `reset-password`, `auth/callback`, and a session-guarded `dashboard` — living
   alongside the existing `pages/` (Pages Router) marketing site + API routes.
