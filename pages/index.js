@@ -19,7 +19,7 @@ export default function Home() {
                 <a href="#features">Features</a>
                 <a href="#pricing">Pricing</a>
                 <a href="#products">Products</a>
-                <a href="#dashboard">Dashboard</a>
+                <a href="/dashboard">Dashboard</a>
                 <a href="#embed">Embed</a>
                 <a href="/login" class="cta-button">Login</a>
             </nav>
@@ -37,7 +37,7 @@ export default function Home() {
             <a href="#features">Features</a>
             <a href="#pricing">Pricing</a>
             <a href="#products">Products</a>
-            <a href="#dashboard">Dashboard</a>
+            <a href="/dashboard">Dashboard</a>
             <a href="#embed">Embed</a>
             <a href="/login" class="cta-button">Login</a>
         </nav>
@@ -308,134 +308,6 @@ export default function Home() {
             </div>
         </section>
 
-        <!-- Dashboard Section -->
-        <section class="dashboard" id="dashboard">
-            <div class="dashboard-container">
-                <div class="dashboard-header">
-                    <h2>Try Translation Dashboard</h2>
-                    <p>Experience our AI-powered translation engine in action</p>
-                </div>
-                
-                <div class="dashboard-content">
-                    <div class="translation-panel">
-                        <div class="input-section">
-                            <div class="input-header">
-                                <h3>Original Text</h3>
-                                <div class="language-indicator">
-                                    <div class="flag english"></div>
-                                    <span>English</span>
-                                </div>
-                            </div>
-                            <textarea 
-                                id="inputText" 
-                                placeholder="Enter text to translate... Try typing 'Welcome to our website' or any other text you'd like to see translated."
-                                rows="8"
-                            ></textarea>
-                            <div class="input-footer">
-                                <div class="counter-info">
-                                    <span class="char-count">0 characters</span>
-                                    <span class="word-count">0 words</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="translation-controls">
-                            <div class="language-dropdown-container">
-                                <label for="languageSelector">Translate to:</label>
-                                <select id="languageSelector" class="language-dropdown">
-                                    <option value="french">🇫🇷 Français</option>
-                                    <option value="spanish">🇪🇸 Español</option>
-                                    <option value="german">🇩🇪 Deutsch</option>
-                                    <option value="italian">🇮🇹 Italiano</option>
-                                    <option value="portuguese">🇵🇹 Português</option>
-                                    <option value="dutch">🇳🇱 Nederlands</option>
-                                    <option value="russian">🇷🇺 Русский</option>
-                                    <option value="chinese">🇨🇳 中文</option>
-                                    <option value="japanese">🇯🇵 日本語</option>
-                                    <option value="korean">🇰🇷 한국어</option>
-                                </select>
-                            </div>
-                            
-                            <div class="language-switch">
-                                <div class="switch-arrow">→</div>
-                            </div>
-                            
-                            <div class="control-buttons">
-                                <button id="translateButton" class="translate-button">
-                                    <span class="button-icon">🌍</span>
-                                    <span class="button-text">Translate</span>
-                                </button>
-                                <button id="clearButton" class="clear-button">
-                                    <span class="button-icon">🗑️</span>
-                                    <span class="button-text">Clear</span>
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="output-section">
-                            <div class="output-header">
-                                <h3>Translated Text</h3>
-                                <div class="language-indicator" id="targetLanguageIndicator">
-                                    <div class="flag french"></div>
-                                    <span>Français</span>
-                                </div>
-                            </div>
-                            <textarea 
-                                id="outputText" 
-                                placeholder="Translation will appear here..."
-                                rows="8"
-                                readonly
-                            ></textarea>
-                            <div class="output-footer">
-                                <span class="translation-info">Powered by WebNew AI</span>
-                                <button id="copyButton" class="copy-output-button">
-                                    <span class="button-icon">📋</span>
-                                    Copy
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="dashboard-features">
-                        <div class="feature-item">
-                            <div class="feature-icon">⚡</div>
-                            <span>Real-time Translation</span>
-                        </div>
-                        <div class="feature-item">
-                            <div class="feature-icon">🎯</div>
-                            <span>Context-Aware AI</span>
-                        </div>
-                        <div class="feature-item">
-                            <div class="feature-icon">🔒</div>
-                            <span>Secure & Private</span>
-                        </div>
-                    </div>
-
-                    <!-- Adding translation history section -->
-                    <div class="translation-history" id="translationHistory">
-                        <div class="history-header">
-                            <h3>Translation History</h3>
-                            <div class="history-actions">
-                                <button id="downloadHistoryButton" class="download-history-button" onclick="downloadHistory()">
-                                    <span class="button-icon">📥</span>
-                                    <span class="button-text">Download</span>
-                                </button>
-                                <button id="clearHistoryButton" class="clear-history-button">
-                                    <span class="button-icon">🗑️</span>
-                                    <span class="button-text">Clear History</span>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="history-content" id="historyContent">
-                            <div class="history-empty">
-                                <div class="empty-icon">📝</div>
-                                <p>No translations yet. Start translating to see your history here!</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
 
         <!-- Contact Section -->
         <section class="contact">
