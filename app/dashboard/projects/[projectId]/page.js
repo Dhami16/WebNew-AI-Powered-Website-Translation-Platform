@@ -88,7 +88,14 @@ export default function ProjectDetailPage() {
   if (loading) return <p className="text-sm text-slate-500">Loading...</p>;
   if (!project) return <p className="text-sm text-red-600">Project not found.</p>;
 
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://your-deployment-domain.com";
+  // This dashboard and /cdn/webnew.js + /api/translate are the same Next.js
+  // app, so the browser's own origin is always the correct base URL --
+  // preferred over NEXT_PUBLIC_BASE_URL, which can silently drift out of sync
+  // with whatever domain is actually serving this deployment.
+  const baseUrl =
+    typeof window !== "undefined"
+      ? window.location.origin
+      : process.env.NEXT_PUBLIC_BASE_URL || "https://your-deployment-domain.com";
   const embedSnippet = newSiteResult
     ? `<script\n  src="${baseUrl}/cdn/webnew.js"\n  data-base-url="${baseUrl}"\n  data-api-key="${newSiteResult.apiKey}"\n  data-default-lang=""\n  async\n></script>`
     : "";
