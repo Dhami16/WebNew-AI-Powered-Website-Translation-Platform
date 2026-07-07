@@ -12,6 +12,7 @@ export default function SiteDetailPage() {
   const [loading, setLoading] = useState(true);
   const [name, setName] = useState("");
   const [origins, setOrigins] = useState("");
+  const [provider, setProvider] = useState("mymemory");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
   const [newKey, setNewKey] = useState(null);
@@ -27,6 +28,7 @@ export default function SiteDetailPage() {
       setSite(json.data);
       setName(json.data.name);
       setOrigins(json.data.allowed_origins.join(", "));
+      setProvider(json.data.provider || "mymemory");
     }
     setLoading(false);
   }
@@ -49,7 +51,7 @@ export default function SiteDetailPage() {
     const res = await fetch(`/api/sites/${siteId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, allowedOrigins }),
+      body: JSON.stringify({ name, allowedOrigins, provider }),
     });
     const json = await res.json();
     setSaving(false);
@@ -187,6 +189,17 @@ export default function SiteDetailPage() {
             onChange={(e) => setOrigins(e.target.value)}
             className="rounded border border-slate-300 px-3 py-2"
           />
+        </label>
+        <label className="flex flex-col gap-1 text-sm">
+          Translation provider
+          <select
+            value={provider}
+            onChange={(e) => setProvider(e.target.value)}
+            className="rounded border border-slate-300 px-3 py-2"
+          >
+            <option value="mymemory">MyMemory (default, free)</option>
+            <option value="deepl">DeepL (requires DEEPL_API_KEY)</option>
+          </select>
         </label>
         <button
           type="submit"

@@ -194,4 +194,15 @@ describe("resolveSiteFromApiKey", () => {
     const result = await resolveSiteFromApiKey(rawKey, "example.com");
     expect(result).toEqual({ ok: true, siteId: "s1" });
   });
+
+  it("passes through the site's configured translation provider so callers know which one to use", async () => {
+    getServiceClient.mockReturnValue(
+      makeFakeSupabase({
+        apiKeyRow: { id: "k1", site_id: "s1", key_hash: validHash, is_active: true, revoked_at: null },
+        siteRow: { id: "s1", is_active: true, allowed_origins: ["example.com"], provider: "deepl" },
+      })
+    );
+    const result = await resolveSiteFromApiKey(rawKey, "example.com");
+    expect(result).toEqual({ ok: true, siteId: "s1", provider: "deepl" });
+  });
 });

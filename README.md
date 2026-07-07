@@ -110,6 +110,34 @@ deliberately dropped — this deployment doesn't monetize, so a payments layer
 would be pure overhead with no product benefit. V2.0 is considered complete
 as of Milestone 4.
 
+## 🔌 V3.0 — Pluggable Translation Providers
+
+`lib/translation/provider.js` always had a comment calling itself "the seam
+future providers plug into" — nothing had ever actually plugged into it until
+now. It's now a thin dispatcher over `lib/translation/providers/mymemory.js`
+and `lib/translation/providers/deepl.js`, each exporting the same
+`translate(text, sourceIso, targetIso, config)` contract (honest
+`{ok, translatedText}` / `{ok:false, reason, detail}` — DeepL's own
+quota-exceeded status (HTTP 456) maps to the same `provider_error` reason
+MyMemory's embedded quota errors already use).
+
+- **Per-site choice, not global**: `sites.provider` (migration
+  `007_add_site_provider.sql`, defaults every existing site to `mymemory`) —
+  changeable via a "Translation provider" dropdown on the site detail page.
+  `lib/auth/apiKeys.js`'s `resolveSiteFromApiKey` already selects the site row
+  on every request, so reading `provider` off it is free — no extra query.
+- **DeepL** is opt-in per site, using one global `DEEPL_API_KEY` (free tier,
+  500,000 characters/month, no credit card required) — same "one
+  owner-configured credential shared across every site that opts in" pattern
+  `MYMEMORY_EMAIL` already uses, not a per-tenant key. DeepL's `target_lang`
+  codes diverge from plain ISO (uppercase, and Portuguese needs `PT-PT`
+  specifically) — that mapping lives in `providers/deepl.js` itself, not the
+  shared `lib/translation/languages.js`, since it's DeepL-specific.
+- **SEO was dropped from V3's original scope**: the widget translates
+  client-side after page load with no server-rendered per-language URLs, so
+  real hreflang/sitemap SEO would need a much bigger architecture change
+  (effectively a rendering proxy) — not a V3-sized feature.
+
 ## 🚀 Tech Stack
 
 - **Next.js 14** (Pages Router) + React 18 — the app is one Next.js monolith;
@@ -120,10 +148,11 @@ as of Milestone 4.
   `translation_history`. RLS is enabled on all three tables with **zero
   policies** (default-deny); the actual tenant boundary is the service-role
   client + `site_id` filtering in `lib/history.js` / `lib/auth/apiKeys.js`.
-- **MyMemory** — the translation provider, called via `lib/translation/provider.js`
-  (a seam intended for additional providers later, e.g. DeepL/OpenAI). Free, no
-  API key required; LibreTranslate's public instance stopped serving
-  unauthenticated requests, which is why this isn't LibreTranslate-backed.
+- **MyMemory** (default) and **DeepL** (opt-in per site) — pluggable
+  translation providers behind `lib/translation/provider.js`'s dispatcher (see
+  V3.0 above). MyMemory needs no API key; LibreTranslate's public instance
+  stopped serving unauthenticated requests, which is why the default isn't
+  LibreTranslate-backed.
 - **Upstash Redis** — per-site rate limiting (optional in local dev; skipped
   entirely if not configured).
 - **Vitest** (unit) + **Playwright** (e2e) for testing.
@@ -162,7 +191,10 @@ as of Milestone 4.
 │   ├── auth/
 │   │   ├── apiKeys.js         # Key generation/hashing/validation, origin resolution
 │   │   └── session.js         # getSessionUser() for app/api/** Route Handlers
-│   ├── translation/          # provider.js (MyMemory call), languages.js (internal<->ISO)
+│   ├── translation/
+│   │   ├── provider.js        # Dispatcher -- picks a site's configured provider
+│   │   ├── providers/mymemory.js, providers/deepl.js
+│   │   └── languages.js       # internal key <-> ISO 639-1 (shared across providers)
 │   ├── history.js            # site_id-scoped translation_history CRUD
 │   ├── analytics.js          # site_id-scoped usage aggregation (success-only)
 │   ├── projects.js           # owner_id-scoped projects CRUD
@@ -179,6 +211,7 @@ as of Milestone 4.
 │   ├── 004_create_profiles_and_projects.sql   # V2.0 Milestone 1
 │   ├── 005_add_projects_slug_unique.sql       # V2.0 Milestone 2
 │   ├── 006_add_api_key_label.sql              # V2.0 Milestone 3
+│   ├── 007_add_site_provider.sql              # V3.0
 │   ├── create-site.js        # Local-only onboarding CLI (issues an API key)
 │   ├── list-sites.js
 │   └── revoke-api-key.js
@@ -213,7 +246,7 @@ as of Milestone 4.
    `scripts/001_create_translation_history.sql`, then `002_create_sites_and_api_keys.sql`,
    then `003_add_site_id_to_translation_history.sql`, then
    `004_create_profiles_and_projects.sql`, then `005_add_projects_slug_unique.sql`,
-   then `006_add_api_key_label.sql` (V2.0 — accounts/projects/sites dashboard).
+   then `006_add_api_key_label.sql`, then `007_add_site_provider.sql`.
    Migration 003 truncates `translation_history` (it only ever held unscoped
    demo data).
 
@@ -292,8 +325,11 @@ Switch language programmatically with `WebNewTranslate.setLanguage('french')`
   `public/cdn/webnew.js` and `lib/translation/languages.js` together — they must
   stay in sync.
 - **Styling**: `public/styles/style.css`.
-- **Translation provider**: swap the implementation in `lib/translation/provider.js`;
-  it's the seam intended for adding DeepL/OpenAI/etc. later.
+- **Translation provider**: MyMemory and DeepL are already pluggable per site
+  (see V3.0 above). Adding a third: create `lib/translation/providers/<name>.js`
+  exporting the same `translate(text, sourceIso, targetIso, config)` contract,
+  add it to the `PROVIDERS` map in `lib/translation/provider.js`, and it's
+  selectable from the site detail page's dropdown.
 
 ## 🚀 Deployment
 

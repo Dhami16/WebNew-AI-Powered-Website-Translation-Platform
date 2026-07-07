@@ -88,7 +88,12 @@ export default async function handler(req, res) {
   }
 
   const startedAt = Date.now();
-  const providerResult = await translateText(text, normalizedSource.iso, normalizedTarget.iso);
+  const providerResult = await translateText(
+    text,
+    normalizedSource.iso,
+    normalizedTarget.iso,
+    auth.provider
+  );
 
   if (!providerResult.ok) {
     const messages = {

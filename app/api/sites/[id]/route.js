@@ -31,13 +31,16 @@ export async function PATCH(request, { params }) {
     name: typeof body.name === "string" ? body.name.trim() : undefined,
     allowedOrigins: body.allowedOrigins,
     isActive: typeof body.isActive === "boolean" ? body.isActive : undefined,
+    provider: typeof body.provider === "string" ? body.provider : undefined,
   });
 
   if (!result.ok) {
     const status =
       result.error === "not_found"
         ? 404
-        : result.error === "at_least_one_origin_required" || result.error === "nothing_to_update"
+        : result.error === "at_least_one_origin_required" ||
+          result.error === "nothing_to_update" ||
+          result.error === "unsupported_provider"
         ? 400
         : 500;
     return NextResponse.json({ success: false, error: result.error }, { status });
